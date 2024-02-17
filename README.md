@@ -11,7 +11,7 @@ This project was bootstrapped by [create-neon](https://www.npmjs.com/package/cre
 
 
 ## Installing wgpu-canvas
-Installing neon_al requires a [supported version of Node and Rust](https://github.com/neon-bindings/neon#platform-support).
+Installing wgpu-canvas requires a [supported version of Node and Rust](https://github.com/neon-bindings/neon#platform-support).
 
 You can install the project with npm. In the project directory, run:
 
