@@ -2,11 +2,10 @@
 import { App, Window,} from './lib/index.js'
 
 
-// app을 숨기면, 여러 윈도중 메인 윈도 식별이 어려울듯.
 const app = new App();
 app.run();
 
-const win = Window.open(null, 'test', 'resizable,width=300,height=300');
+const win = Window.open(null, 'test', 'resizable,width=200,height=200');
 
 win.addEventListener('resize', e => {
     console.log("listner resize")
@@ -61,7 +60,7 @@ function draw(win) {
 
     ctx.fillStyle = "orange";
     ctx.font = "italic 24px Arial";
-    ctx.fillText("Hello 안녕", 50, 90);
+    ctx.fillText("Hello WGPU", 50, 90);
 }
 
 win.requestAnimationFrame(draw);

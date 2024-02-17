@@ -1,7 +1,11 @@
 # wgpu-canvas
-Wgpu Canvas is a browser-less implementation of the HTML Canvas drawing API for Node.js.
+**wgpu-canvas** is a browser-less implementation of the HTML Canvas drawing API for Node.js.
 
-This project was inspired by the skia-canvas project (https://github.com/samizdatco/skia-canvas) and changed the backend from skia to wgpu. Many parts of the canvas API were borrowed from the skia-canvas project, and wgpu used vello 2D graphics (https://github.com/linebender/vello).
+This project was inspired by the skia-canvas project (https://github.com/samizdatco/skia-canvas) and changed the backend from **skia** to **wgpu**. Many parts of the canvas API were borrowed from the skia-canvas project, and wgpu used vello 2D graphics (https://github.com/linebender/vello).
+
+The DOM API was rewritten in ES6 based on the code from https://github.com/fgnass/domino, and the CSS was modified from https://github.com/NV/CSSOM based on ES6.
+
+The html parser is https://github.com/inikulin/parse5 and the svg code was borrowed from https://github.com/svgdotjs/svgdom.
 
 This project was bootstrapped by [create-neon](https://www.npmjs.com/package/create-neon).
 
@@ -12,6 +16,8 @@ Installing neon_al requires a [supported version of Node and Rust](https://githu
 You can install the project with npm. In the project directory, run:
 
 ```sh
+$ git clone https://github.com/kyeongwoon/wgpu-canvas
+$ cd wgpu-canvas
 $ npm install
 ```
 
@@ -45,7 +51,7 @@ function draw(win) {
 win.requestAnimationFrame(draw);
 
 ```
+![](./assets/screenshot.png)
 
 ## to do
-- support DOM API
 - support CSS Box layout
