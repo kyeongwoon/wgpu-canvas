@@ -1,5 +1,5 @@
 # wgpu-canvas
-**wgpu-canvas** is a browser-less implementation of the HTML Canvas drawing API for Node.js.
+**wgpu-canvas** is a browser-less implementation of the HTML Canvas drawing API for Node.js using Rust Neon.
 
 This project was inspired by the skia-canvas project (https://github.com/samizdatco/skia-canvas) and changed the backend from **skia** to **wgpu**. Many parts of the canvas API were borrowed from the skia-canvas project, and wgpu used vello 2D graphics (https://github.com/linebender/vello).
 
@@ -54,4 +54,5 @@ win.requestAnimationFrame(draw);
 ![](./assets/screenshot.png)
 
 ## to do
+- support SVG rendering
 - support CSS Box layout
