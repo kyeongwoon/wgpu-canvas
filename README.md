@@ -1,6 +1,9 @@
 # wgpu-canvas
 **wgpu-canvas** is a browser-less implementation of the HTML Canvas drawing API for Node.js using Rust Neon.
 
+> [!CAUTION]
+> This repository is under development, and might not work.
+
 This project was inspired by the skia-canvas project (https://github.com/samizdatco/skia-canvas) and changed the backend from **skia** to **wgpu**. Many parts of the canvas API were borrowed from the skia-canvas project, and wgpu used vello 2D graphics (https://github.com/linebender/vello).
 
 The DOM API was rewritten in ES6 based on the code from https://github.com/fgnass/domino, and the CSS was modified from https://github.com/NV/CSSOM based on ES6.
