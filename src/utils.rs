@@ -4,7 +4,6 @@
 #![allow(unused_imports)]
 use core::ops::Range;
 use css_color::Rgba;
-use neon::object::This;
 use neon::prelude::*;
 use neon::result::Throw;
 use std::cmp;
@@ -44,7 +43,7 @@ pub fn to_radians(degrees: f32) -> f32 {
     degrees / 180.0 * PI
 }
 
-pub fn check_argc(cx: &mut FunctionContext, argc: i32) -> NeonResult<()> {
+pub fn check_argc(cx: &mut FunctionContext, argc: usize) -> NeonResult<()> {
     match cx.len() >= argc {
         true => Ok(()),
         false => cx.throw_type_error("Not enough arguments"),
@@ -91,7 +90,7 @@ pub fn string_for_key(
 }
 
 pub fn opt_string_arg(cx: &mut FunctionContext, idx: usize) -> Option<String> {
-    match cx.argument_opt(idx as i32) {
+    match cx.argument_opt(idx) {
         Some(arg) => match arg.downcast::<JsString, _>(cx) {
             Ok(v) => Some(v.value(cx)),
             Err(_e) => None,
@@ -108,7 +107,7 @@ pub fn string_arg_or(cx: &mut FunctionContext, idx: usize, default: &str) -> Str
 }
 
 pub fn string_arg<'a>(cx: &mut FunctionContext<'a>, idx: usize, attr: &str) -> NeonResult<String> {
-    let exists = cx.len() > idx as i32;
+    let exists = cx.len() > idx;
     match opt_string_arg(cx, idx) {
         Some(v) => Ok(v),
         None => cx.throw_type_error(if exists {
@@ -127,7 +126,7 @@ pub fn strings_to_array<'a>(
     cx: &mut FunctionContext<'a>,
     strings: &[String],
 ) -> JsResult<'a, JsArray> {
-    let array = JsArray::new(cx, strings.len() as u32);
+    let array = JsArray::new(cx, strings.len());
     for (i, val) in strings.iter().enumerate() {
         let num = cx.string(val.as_str());
         array.set(cx, i as u32, num)?;
@@ -154,7 +153,7 @@ pub fn string_idx_range(text: &str, start_idx: usize, end_idx: usize) -> Range<u
 //
 
 pub fn opt_bool_arg(cx: &mut FunctionContext, idx: usize) -> Option<bool> {
-    match cx.argument_opt(idx as i32) {
+    match cx.argument_opt(idx) {
         Some(arg) => match arg.downcast::<JsBoolean, _>(cx) {
             Ok(v) => Some(v.value(cx)),
             Err(_e) => None,
@@ -171,7 +170,7 @@ pub fn bool_arg_or(cx: &mut FunctionContext, idx: usize, default: bool) -> bool 
 }
 
 pub fn bool_arg(cx: &mut FunctionContext, idx: usize, attr: &str) -> NeonResult<bool> {
-    let exists = cx.len() > idx as i32;
+    let exists = cx.len() > idx;
     match opt_bool_arg(cx, idx) {
         Some(v) => Ok(v),
         None => cx.throw_type_error(if exists {
@@ -217,7 +216,7 @@ pub fn floats_in(cx: &mut FunctionContext, vals: &[Handle<JsValue>]) -> Vec<f32>
 }
 
 pub fn opt_float_arg(cx: &mut FunctionContext, idx: usize) -> Option<f32> {
-    if let Some(arg) = cx.argument_opt(idx as i32) {
+    if let Some(arg) = cx.argument_opt(idx) {
         if let Ok(num) = arg.downcast::<JsNumber, _>(cx) {
             if num.value(cx).is_finite() {
                 return Some(num.value(cx) as f32);
@@ -235,7 +234,7 @@ pub fn float_arg_or(cx: &mut FunctionContext, idx: usize, default: f64) -> f32 {
 }
 
 pub fn float_arg(cx: &mut FunctionContext, idx: usize, attr: &str) -> NeonResult<f32> {
-    let exists = cx.len() > idx as i32;
+    let exists = cx.len() > idx;
     match opt_float_arg(cx, idx) {
         Some(v) => Ok(v),
         None => cx.throw_type_error(if exists {
@@ -251,7 +250,7 @@ pub fn float_arg(cx: &mut FunctionContext, idx: usize, attr: &str) -> NeonResult
 }
 
 pub fn floats_to_array<'a>(cx: &mut FunctionContext<'a>, nums: &[f32]) -> JsResult<'a, JsValue> {
-    let array = JsArray::new(cx, nums.len() as u32);
+    let array = JsArray::new(cx, nums.len());
     for (i, val) in nums.iter().enumerate() {
         let num = cx.number(*val);
         array.set(cx, i as u32, num)?;
@@ -260,7 +259,7 @@ pub fn floats_to_array<'a>(cx: &mut FunctionContext<'a>, nums: &[f32]) -> JsResu
 }
 
 pub fn f64_to_array<'a>(cx: &mut FunctionContext<'a>, nums: &[f64]) -> JsResult<'a, JsValue> {
-    let array = JsArray::new(cx, nums.len() as u32);
+    let array = JsArray::new(cx, nums.len());
     for (i, val) in nums.iter().enumerate() {
         let num = cx.number(*val);
         array.set(cx, i as u32, num)?;
@@ -278,7 +277,7 @@ pub fn opt_float_args(cx: &mut FunctionContext, rng: Range<usize>) -> Vec<f32> {
 
     let mut args: Vec<f32> = Vec::new();
     for i in rng.start..end {
-        if let Some(arg) = cx.argument_opt(i as i32) {
+        if let Some(arg) = cx.argument_opt(i) {
             if let Ok(num) = arg.downcast::<JsNumber, _>(cx) {
                 let val = num.value(cx) as f32;
                 if val.is_finite() {
@@ -342,7 +341,7 @@ pub fn color_in<'a>(cx: &mut FunctionContext<'a>, val: Handle<'a, JsValue>) -> O
 }
 
 pub fn color_arg(cx: &mut FunctionContext, idx: usize) -> Option<Color> {
-    match cx.argument_opt(idx as i32) {
+    match cx.argument_opt(idx) {
         Some(arg) => color_in(cx, arg),
         _ => None,
     }
@@ -404,7 +403,7 @@ pub fn to_matrix(t: &[f32]) -> Option<Matrix> {
 // }
 
 pub fn opt_matrix_arg(cx: &mut FunctionContext, idx: usize) -> Option<Matrix> {
-    if let Some(arg) = cx.argument_opt(idx as i32) {
+    if let Some(arg) = cx.argument_opt(idx) {
         if let Ok(array) = arg.downcast::<JsArray, _>(cx) {
             if let Ok(vals) = array.to_vec(cx) {
                 let terms = floats_in(cx, &vals);
@@ -428,7 +427,7 @@ pub fn matrix_arg(cx: &mut FunctionContext, idx: usize) -> NeonResult<Matrix> {
 
 pub fn points_arg(cx: &mut FunctionContext, idx: usize) -> NeonResult<Vec<Point>> {
     let mut nums: Vec<f32> = vec![];
-    if let Some(arg) = cx.argument_opt(idx as i32) {
+    if let Some(arg) = cx.argument_opt(idx) {
         if let Ok(array) = arg.downcast::<JsArray, _>(cx) {
             if let Ok(vals) = array.to_vec(cx) {
                 nums = floats_in(cx, &vals);
@@ -466,7 +465,7 @@ pub fn points_arg(cx: &mut FunctionContext, idx: usize) -> NeonResult<Vec<Point>
 use crate::path::BoxedPath2D;
 
 pub fn opt_path2d_arg(cx: &mut FunctionContext, idx: usize) -> Option<Path> {
-    if let Some(arg) = cx.argument_opt(idx as i32) {
+    if let Some(arg) = cx.argument_opt(idx) {
         if let Ok(arg) = arg.downcast::<BoxedPath2D, _>(cx) {
             let arg = arg.borrow();
             return Some(arg.path.clone());
