@@ -13,24 +13,27 @@ crate-type = ["cdylib", "lib"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.81"
-serde_json = "1.0.114"
-serde = { version = "1.0.197", features = ["derive"] }
+anyhow = "1.0.82"
+serde_json = "1.0.116"
+serde = { version = "1.0.200", features = ["derive"] }
 once_cell = "1.19.0"
 pollster = "0.3.0"
 winit = { version="0.29.10", features = ["serde", "rwh_05"] }
+
+# OK e04b6028651dfd6b87067c0d27c1207c7f735a6d
+# e4ca553c2ac6e769bf02bd5ac7350c1c9b1b22f0
 vello = { git = "https://github.com/linebender/vello/", features = ["buffer_labels", "wgpu-profiler","hot_reload"] ,rev = "e04b6028651dfd6b87067c0d27c1207c7f735a6d" }
 css-color = "0.2.8"
-image = "0.25.0"
+image = "0.25.1"
 wgpu-profiler = "0.15.0"
 wgpu = "0.18.0"
-rayon = "1.9.0"
+rayon = "1.10.0"
 crossbeam = "0.8.4"
 instant = "0.1.12"
 futures = "0.3.30"
 bytemuck = "1.15.0"
 lazy_static = "1.4.0"
-smallvec = "1.13.1"
+smallvec = "1.13.2"
 
 [dependencies.neon]
 version = "1.0.0"

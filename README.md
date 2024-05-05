@@ -59,6 +59,12 @@ win.requestAnimationFrame(draw);
 ```
 ![](./assets/screenshot.png)
 
-## to do
-- support SVG rendering
-- support CSS Box layout
+## TODO
+
+Here are the big components of the library:
+
+- [x] WGPU
+- [x] HTML Canvas
+- [ ] Web Widget
+- [ ] SVG rendering
+- [ ] CSS Box rendering
