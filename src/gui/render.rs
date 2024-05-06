@@ -19,8 +19,7 @@ use winit::{
     event::{Event, WindowEvent},
     event_loop::EventLoop,
     event_loop::{ControlFlow, EventLoopBuilder, EventLoopProxy},
-    window::Window,
-    window::WindowBuilder,
+    window::Window
 };
 
 use crate::context::{Context2D, Page};

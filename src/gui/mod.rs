@@ -3,6 +3,7 @@
 #![allow(unused_imports)]
 
 use neon::prelude::*;
+use std::num::NonZeroUsize;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use serde_json::{Map, Value};
@@ -32,11 +33,13 @@ use winit::{
     event::{
         ElementState, Event, KeyEvent, MouseButton, MouseScrollDelta, StartCause, WindowEvent,
     },
-    event_loop::{ControlFlow, EventLoop, EventLoopBuilder, EventLoopProxy, EventLoopWindowTarget},
+    event_loop::{ActiveEventLoop, ControlFlow, EventLoop, EventLoopBuilder, EventLoopProxy},
     keyboard::{Key, ModifiersState},
     platform::pump_events::{EventLoopExtPumpEvents, PumpStatus},
-    window::{CursorGrabMode, Window, WindowBuilder, WindowId},
+    window::{CursorGrabMode, Window, WindowId, WindowAttributes},
 };
+use winit::application::ApplicationHandler;
+use winit::platform::macos::{OptionAsAlt, WindowAttributesExtMacOS, WindowExtMacOS};
 
 use crate::context::{BoxedContext2D, Context2D};
 use crate::utils::*;
@@ -68,10 +71,16 @@ pub enum CanvasEvent {
     Timer,
 }
 
+pub struct Application {
+    pub event_loop: EventLoop<CanvasEvent>,
+    pub proxy: EventLoopProxy<CanvasEvent>,
+    pub windows: HashMap<WindowId, EngineRenderer>,
+}
+
 thread_local!(
     // the event loop can only be run from the main thread
     static EVENT_LOOP: RefCell<EventLoop<CanvasEvent>> = RefCell::new(
-        EventLoopBuilder::<CanvasEvent>::with_user_event()
+        EventLoop::<CanvasEvent>::with_user_event()
             .build()
             .unwrap(),
     );
@@ -286,7 +295,13 @@ pub fn open(mut cx: FunctionContext) -> JsResult<JsNumber> {
     let spec = serde_json::from_str::<WindowSpec>(&win_config).expect("Invalid window state");
 
 
+    let mut window_attributes = Window::default_attributes()
+    .with_title(spec.title)
+    .with_resizable(true)
+    .with_inner_size(LogicalSize::new(spec.width, spec.height));
+
     let mut id = unsafe { WindowId::dummy() };
+    /* 
     EVENT_LOOP.with(|event_loop| {
         let window = WindowBuilder::new()
             .with_inner_size(LogicalSize::new(spec.width, spec.height))
@@ -298,6 +313,15 @@ pub fn open(mut cx: FunctionContext) -> JsResult<JsNumber> {
         let renderer = EngineRenderer::new(window, context.borrow().get_page());
 
         WINDOWS.with(|cell| cell.borrow_mut().insert(id, renderer));
+    });
+    */
+    EVENT_LOOP.with(|event_loop| {
+        let window = event_loop.borrow_mut().create_window(window_attributes).unwrap();
+        id = window.id();
+        let renderer = EngineRenderer::new(window, context.borrow().get_page());
+
+        WINDOWS.with(|cell| cell.borrow_mut().insert(id, renderer));
+
     });
 
     let raw_id = &id as *const WindowId as *const u64;
