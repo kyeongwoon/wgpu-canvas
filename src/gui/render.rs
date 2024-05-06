@@ -32,13 +32,13 @@ pub struct EngineRenderer {
     pub renderers: Vec<Option<Renderer>>,
 
     pub scene: Scene,
-    pub window: Window,
+    pub window: Arc<Window>,
     pub page: Arc<Mutex<Page>>,
 }
 
 // GPU 관련 3가지만 처리 : 서피스 생성, 리사이징, 드로잉
 impl EngineRenderer {
-    pub fn new(window: Window, page: Arc<Mutex<Page>>) -> Self {
+    pub fn new(window: &Arc<Window>, page: Arc<Mutex<Page>>) -> Self {
         let mut rc: RenderContext = RenderContext::new().unwrap();
         let mut renderers: Vec<Option<Renderer>> = vec![];
 
@@ -71,7 +71,7 @@ impl EngineRenderer {
             rcx: rc,
             renderers,
             scene: Scene::new(),
-            window,
+            window: Arc::clone(window),
             page,
         }
     }

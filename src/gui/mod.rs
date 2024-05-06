@@ -318,7 +318,9 @@ pub fn open(mut cx: FunctionContext) -> JsResult<JsNumber> {
     EVENT_LOOP.with(|event_loop| {
         let window = event_loop.borrow_mut().create_window(window_attributes).unwrap();
         id = window.id();
-        let renderer = EngineRenderer::new(window, context.borrow().get_page());
+        let a: Arc<Window> = Arc::new(window);
+        let mut renderer = EngineRenderer::new(&a, context.borrow().get_page());
+
 
         WINDOWS.with(|cell| cell.borrow_mut().insert(id, renderer));
 
